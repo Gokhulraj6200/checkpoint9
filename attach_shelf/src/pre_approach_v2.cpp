@@ -48,7 +48,7 @@ private:
     this->get_parameter("degrees", deg);
     this->get_parameter("final_approach", final_approach);
 
-    RCLCPP_INFO(this->get_logger(), "Target: %f; Curr: %f", obs,
+    RCLCPP_INFO(this->get_logger(), "Target: %f; Current: %f", obs,
                 msg->ranges[540]);
 
     geometry_msgs::msg::Twist cmd_vel_msg;
