@@ -6,11 +6,11 @@
 
 class PreApproach : public rclcpp::Node {
 public:
-  PreApproach() : Node("pre_approach"), obstacle(0.0), degrees(0.0) {
+  PreApproach() : Node("pre_approach"), obstacle(0.0), degrees(0) {
     this->declare_parameter("obstacle",
                             0.0); 
     this->declare_parameter("degrees",
-                            0.0); 
+                            0); 
 
     getting_params();
 
@@ -33,7 +33,7 @@ private:
   void getting_params() {
     obstacle =
         this->get_parameter("obstacle").get_parameter_value().get<float>();
-    degrees = this->get_parameter("degrees").get_parameter_value().get<float>();
+    degrees = this->get_parameter("degrees").get_parameter_value().get<int>();
     target_yaw = degrees * M_PI / 180.0;
     RCLCPP_INFO(this->get_logger(), "Obstacle threshold set to: %f", obstacle);
     RCLCPP_INFO(this->get_logger(), "Rotation degrees set to: %f", degrees);
@@ -95,26 +95,29 @@ private:
       is_rotated = true;
       angular_speed = 0.0;
       RCLCPP_INFO(this->get_logger(),
-                  "Yaw error within tolerance, setting is_rotated to true");
+                  "Yaw error within tolerance, rotation is complete");
+        geometry_msgs::msg::Twist msg;
+        msg.linear.x = 0.0;
+        msg.angular.z = 0.0;
+        publisher_->publish(msg);
+      rclcpp::shutdown();
     } else {
       angular_speed = kp * yaw_error;
       RCLCPP_INFO(this->get_logger(), "Yaw error outside tolerance, rotating");
-    }
-
-    geometry_msgs::msg::Twist msg;
+          geometry_msgs::msg::Twist msg;
     msg.linear.x = 0.0;
     msg.angular.z = angular_speed;
     publisher_->publish(msg);
+    }
 
-    RCLCPP_INFO(this->get_logger(), "Rotating robot");
   }
 
   rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_subscriber_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscriber_;
   rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
   float obstacle; 
-  float degrees; 
-  float yaw_tolerance = 0.1;
+  int degrees; 
+  float yaw_tolerance = 0.03;
   float angular_speed = 0.0;
   bool obstacle_detected = false;
   bool is_rotated = false;
