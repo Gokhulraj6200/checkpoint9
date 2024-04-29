@@ -28,7 +28,7 @@ namespace my_components
     }
 
    void PreApproach::scan_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg) {
-
+    if (rotate_operation){
     float distance_to_obstacle = msg->ranges[msg->ranges.size() / 2];
 
     RCLCPP_INFO(this->get_logger(), "Distance to obstacle: %f", distance_to_obstacle);
@@ -41,6 +41,7 @@ namespace my_components
     else if (!obstacle_detected) 
     {
       move_forward();
+    }
     }
   }
 
@@ -67,6 +68,7 @@ namespace my_components
 
   void  PreApproach::rotate_robot() {
 
+  if (rotate_operation){
     double yaw_error = target_yaw - current_yaw;
 
     if (yaw_error > M_PI) {
@@ -88,18 +90,19 @@ namespace my_components
         msg.linear.x = 0.0;
         msg.angular.z = 0.0;
         publisher_->publish(msg);
-      rclcpp::shutdown();
+        rotate_operation = false;
+      
     } else {
-      angular_speed = kp * yaw_error;
+      angular_speed = -0.2 * kp;
       RCLCPP_INFO(this->get_logger(), "Yaw error outside tolerance, rotating");
           geometry_msgs::msg::Twist msg;
     msg.linear.x = 0.0;
     msg.angular.z = angular_speed;
     publisher_->publish(msg);
     }
-
+   }
   }
- 
+
 }
 
 #include "rclcpp_components/register_node_macro.hpp"

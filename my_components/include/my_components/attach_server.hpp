@@ -46,10 +46,10 @@ private:
   double yDistance = 0.0;
   double xDistance_once = 0.0;
   double yDistance_once = 0.0;
+  int extratime = 10;
   bool ready = false;
   bool move_extra = false;
   bool elevated = false;
-  int extratime = 12;
 
   std::shared_ptr<tf2_ros::Buffer> tf_buffer;
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
