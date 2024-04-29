@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
   rclcpp::executors::SingleThreadedExecutor exec;
   rclcpp::NodeOptions options;
 
-  auto attach_server = std::make_shared<my_components::MoveRobot>(options);
+  auto attach_server = std::make_shared<my_components::AttachServer>(options);
   exec.add_node(attach_server);
 
   // spin will block until work comes in, execute work as it becomes available,
