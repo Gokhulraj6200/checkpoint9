@@ -1,42 +1,42 @@
-#ifndef COMPOSITION__PRE_APPROACH_COMPONENT_HPP_
-#define COMPOSITION__PRE_APPROACH_COMPONENT_HPP_
+#ifndef COMPOSITION__PRE_APPROACH_HPP_
+#define COMPOSITION__PRE_APPROACH_HPP_
 
-#include "geometry_msgs/msg/twist.hpp"
 #include "my_components/visibility_control.h"
+#include "geometry_msgs/msg/twist.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
-#include <cmath>
+#include "tf2/LinearMath/Quaternion.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
+#include <chrono>
+#include <math.h>
 
 namespace my_components {
 
 class PreApproach : public rclcpp::Node {
 public:
-  COMPOSITION_PUBLIC                                            // Macros
-      explicit PreApproach(const rclcpp::NodeOptions &options); // constructor
+  COMPOSITION_PUBLIC
+  explicit PreApproach(const rclcpp::NodeOptions &options);
 
 private:
-  rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_subscriber_;
-  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscriber_;
-  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher_;
-  float obstacle = 0.4;
-  int degrees = -99;
-  float yaw_tolerance = 0.05;
-  float angular_speed = 0.0;
-  bool obstacle_detected = false;
-  bool is_rotated = false;
-  double current_yaw = 0.0;
-  double kp = 0.5;
-  double target_yaw = degrees * M_PI / 180.0;
-  bool rotate_operation = true;
+  rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr scan_subscription_;
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_publisher_;
+  int obs;
+  int deg;
 
-  // methods
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
+
+  bool is_rotating_ = false;
+  double initial_yaw_;
+  double target_yaw_;
+  double current_yaw_;
+  bool operation = true;
+
+protected:
   void scan_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg);
   void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
-  void move_forward();
-  void rotate_robot();
 };
 
-} // namespace my_components
+}  // namespace composition
 
-#endif // COMPOSITION__PRE_APPROACH_COMPONENT_HPP_
+#endif  // COMPOSITION__PRE_APPROACH_HPP_

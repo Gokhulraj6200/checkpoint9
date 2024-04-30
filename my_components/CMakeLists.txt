@@ -42,9 +42,13 @@ target_compile_definitions(pre_approach PRIVATE "COMPOSITION_BUILDING_DLL")
 ament_target_dependencies(pre_approach
   "rclcpp"
   "rclcpp_components"
+  "composition"
   "geometry_msgs"
   "sensor_msgs"
-  "nav_msgs")
+  "nav_msgs" 
+  "tf2" 
+  "tf2_ros" 
+  "tf2_geometry_msgs")
 rclcpp_components_register_nodes(pre_approach "my_components::PreApproach")
 set(node_plugins "${node_plugins}my_components::PreApproach;$<TARGET_FILE:pre_approach>\n")
 
@@ -91,6 +95,7 @@ install(TARGETS
 
 install(DIRECTORY
   launch
+  rviz
   DESTINATION share/${PROJECT_NAME}/
 )
 

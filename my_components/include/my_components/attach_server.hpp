@@ -46,7 +46,7 @@ private:
   double yDistance = 0.0;
   double xDistance_once = 0.0;
   double yDistance_once = 0.0;
-  int extratime = 10;
+  int extratime = 12;
   bool ready = false;
   bool move_extra = false;
   bool elevated = false;

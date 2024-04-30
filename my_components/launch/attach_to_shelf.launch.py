@@ -32,7 +32,18 @@ def generate_launch_description():
             output='screen',
             name='manual_composition')
 
+    # RVIZ configuration
+    rviz_config_dir = os.path.join(pkg, 'rviz', 'robot.rviz')
+
+    rviz_node = Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz_node',
+            parameters=[{'use_sim_time': True}],
+            arguments=['-d', rviz_config_dir])
+
     return LaunchDescription([
         container,
+        rviz_node,
         manual_node
     ])
